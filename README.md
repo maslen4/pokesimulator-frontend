@@ -1,4 +1,4 @@
-# Pokémon SPARQL Frontend
+# PokeSimulator Frontend
 
 This is a simple React frontend that queries Pokémon data using
 **SPARQL** from a local **Apache Jena Fuseki** server.\
