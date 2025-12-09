@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-export default function PokemonSearch({ onSelect }) {
+export default function PokemonSearch({ handleSelection }) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
 
@@ -54,7 +54,7 @@ export default function PokemonSearch({ onSelect }) {
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         placeholder="Search Pokémon"
-        style={{ width: "100%", padding: "8px", fontSize: "16px" }}
+        style={{ width: "50%", padding: "8px", fontSize: "16px" }}
       />
 
       {results.length > 0 && (
@@ -63,10 +63,12 @@ export default function PokemonSearch({ onSelect }) {
             border: "1px solid #ccc",
             borderRadius: "6px",
             marginTop: "5px",
+            marginLeft: "25%",
             backgroundColor: "white",
             color: "black",
             maxHeight: "200px",
             overflowY: "auto",
+            width: "50%",
           }}
         >
           {results.map((p) => (
@@ -78,7 +80,7 @@ export default function PokemonSearch({ onSelect }) {
                 cursor: "pointer",
               }}
               onClick={() => {
-                if (onSelect) onSelect(p);
+                handleSelection(p.pokemon);
               }}
             >
               {p.label}
