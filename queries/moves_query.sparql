@@ -1,0 +1,40 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX pkmno: <https://pokemonkg.org/ontology#>
+PREFIX pkmni: <https://pokemonkg.org/instance/>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+
+SELECT ?moveLabel ?moveCategory ?moveTypeLabel ?accuracy ?basePower ?basePowerPoints ?maxPowerPoints
+((?basePower * ?accuracy/100) + (((?maxPowerPoints - ?basePowerPoints) / ?maxPowerPoints) * 100) as ?moveContribution)
+
+WHERE {
+  BIND(<https://pokemonkg.org/instance/pokemon/abomasnow> AS ?pokemonURI)
+  
+  ?learningEvent pkmno:featuresSpecies ?pokemonURI .
+  
+  OPTIONAL { 
+    ?pokemonURI pkmno:isAbleToApply ?isAbleToApply .
+    ?isAbleToApply rdfs:label ?moveLabel .
+    FILTER(lang(?moveLabel) = "en")
+  } 
+  
+  
+  OPTIONAL { ?isAbleToApply pkmno:basePower ?basePower . }
+  OPTIONAL { ?isAbleToApply pkmno:accuracy ?accuracy . }
+  OPTIONAL { ?isAbleToApply pkmno:basePowerPoints ?basePowerPoints . }
+  OPTIONAL { ?isAbleToApply pkmno:maxPowerPoints ?maxPowerPoints . }
+  OPTIONAL { ?isAbleToApply pkmno:hasType ?moveType . }
+  
+  # 7. Determine Move Category (Physical, Special, or Status)
+  ?isAbleToApply rdf:type ?categoryURI .
+  
+  # Filter to only include the specific Move Category classes
+  FILTER(?categoryURI IN (pkmno:PhysicalMove, pkmno:SpecialMove, pkmno:StatusMove))
+  
+  # Extract the last part of the category URI (e.g., "PhysicalMove")
+  BIND(STRAFTER(STR(?categoryURI), STR(pkmno:)) AS ?moveCategory)
+  BIND(STRAFTER(STR(?moveType), STR(pkmno:PokéType:)) AS ?moveTypeLabel)
+  
+  FILTER(BOUND(?basePower) && BOUND(?accuracy) && BOUND(?basePowerPoints) && BOUND(?maxPowerPoints))
+}
+ORDER BY ?moveLabel

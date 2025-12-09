@@ -1,0 +1,48 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX pkmno: <https://pokemonkg.org/ontology#>
+PREFIX pkmni: <https://pokemonkg.org/instance/>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+
+SELECT 
+    ?pokemonName ?artworkURL
+    
+(GROUP_CONCAT (DISTINCT ?moveLabel; SEPARATOR = ",  ") AS ?moves)
+(GROUP_CONCAT (DISTINCT ?typeLabel; SEPARATOR = ",  ") AS ?types)
+(GROUP_CONCAT (DISTINCT ?ability; SEPARATOR = ",  ") AS ?abilities)
+(GROUP_CONCAT (DISTINCT ?hiddenAbility; SEPARATOR = ",  ") AS ?hiddenAbilities)
+
+WHERE {
+  # Given a pokemon (here it is bulbasaur)
+  BIND(<https://pokemonkg.org/instance/pokemon/bulbasaur> AS ?pokemonURI)
+
+  ?pokemonURI rdfs:label ?pokemonName ;
+              pkmno:hasType ?typeURI .
+              
+  FILTER(lang(?pokemonName) = "en")
+
+  #OPTIONAL {?pokedexEntry pkmno:describesPokémon ?pokemonURI ; pkmno:entryNumber ?nationalID . }
+  
+  OPTIONAL {
+    ?pokemonURI foaf:depiction ?artworkURL .
+    FILTER CONTAINS(STR(?artworkURL), "global") 
+  }
+  
+  OPTIONAL { 
+    ?pokemonURI pkmno:isAbleToApply ?isAbleToApply .
+    ?isAbleToApply rdfs:label ?moveLabel .
+    FILTER(lang(?moveLabel) = "en")
+  }   
+OPTIONAL { 
+    ?pokemonURI pkmno:mayHaveAbility ?mayHaveAbility .
+    ?mayHaveAbility rdfs:label ?ability .
+    FILTER(lang(?ability) = "en")
+  }
+OPTIONAL { 
+    ?pokemonURI pkmno:mayHaveHiddenAbil ?mayHaveHiddenAbility .
+    ?mayHaveHiddenAbility rdfs:label ?hiddenAbility .
+    FILTER(lang(?hiddenAbility) = "en")
+  } 
+BIND(STRAFTER(STR(?typeURI), STR(pkmno:PokéType:)) AS ?typeLabel)
+}
+GROUP BY ?pokemonName ?artworkURL 
