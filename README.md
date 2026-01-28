@@ -2,8 +2,6 @@
 
 This is a simple React frontend that queries Pokémon data using
 **SPARQL** from a local **Apache Jena Fuseki** server.\
-There is **no backend** --- the frontend directly queries the SPARQL
-endpoint.
 
 ------------------------------------------------------------------------
 
