@@ -7,7 +7,7 @@ endpoint.
 
 ------------------------------------------------------------------------
 
-## 🚀 Requirements
+##  Requirements
 
 ### 1. **Node.js** (v18+)
 
@@ -35,7 +35,7 @@ Download: https://nodejs.org/
 
 ------------------------------------------------------------------------
 
-## ▶️ Running the Frontend
+##  Running the Frontend
 
 Inside the project folder:
 
@@ -50,7 +50,7 @@ The app will run at:
 
 ------------------------------------------------------------------------
 
-## 🔗 SPARQL Endpoint Used by the Frontend
+##  SPARQL Endpoint Used by the Frontend
 
 The frontend expects Fuseki to expose this endpoint:
 
